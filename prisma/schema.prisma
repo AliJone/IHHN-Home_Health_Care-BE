@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+// Define the Nurse and HeadNurse roles
+enum Role {
+  NURSE
+  HEADNURSE
+}
+
+// Nurse model, including both Nurses and HeadNurses
+model Nurse {
+  id        Int      @id @default(autoincrement())
+  name      String
+  cnic      String   @unique
+  picture   String
+  email     String   @unique
+  role      Role
+  // Relations
+  patients  Patient[] @relation("AssignedPatients")
+  schedules Schedule[]
+}
+
+// Patient model
+model Patient {
+  id                Int      @id @default(autoincrement())
+  name              String
+  causeOfIssue      String
+  location          String
+  dateOfAdmission   DateTime
+  diagnosis         String
+  dischargeSummary  String
+  medicationNotes   String
+  // Relations
+  nurseId           Int
+  nurse             Nurse    @relation("AssignedPatients", fields: [nurseId], references: [id])
+  schedules         Schedule[]
+  administrations   Administration[]
+}
+
+// Schedule model to track patient appointments
+model Schedule {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  status      ScheduleStatus
+  nurseId     Int
+  patientId   Int
+  cancelNote  String?
+  // Relations
+  nurse       Nurse    @relation(fields: [nurseId], references: [id])
+  patient     Patient  @relation(fields: [patientId], references: [id])
+}
+
+// Enum for schedule status
+enum ScheduleStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+  COMPLETED
+}
+
+// Administration model to track checklists for each visit
+model Administration {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  patientId   Int      // This is the foreign key field referencing the Patient model
+  // Relations
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  points      AdminPoint[]
+}
+
+
+// AdminPoint model for each item in the administration checklist
+model AdminPoint {
+  id              Int      @id @default(autoincrement())
+  administrationId Int
+  note            String
+  picture         String   // Assuming this is a URL to the uploaded picture
+  nurseNotes      String
+  // Relations
+  administration  Administration @relation(fields: [administrationId], references: [id])
+}
+
+// Explanation
+// Nurse Model: Represents both nurses and head nurses, differentiated by the role attribute. It includes personal information and relations to patients (for head nurses assigning patients) and schedules (for daily appointments).
+
+// Patient Model: Contains patient details, a reference to their assigned nurse, and relations to schedules (for tracking appointments) and administrations (for tracking visits and checklists).
+
+// Schedule Model: Tracks appointments for patients, including the date, status, and optionally a cancellation note. It links to both nurses and patients to assign and update appointments.
+
+// Administration Model: Represents a visit to a patient, including the date and a relation to administration points, which are the individual items in the administration checklist for that visit.
+
+// AdminPoint Model: Details each item in the administration checklist, including a note, picture URL, and nurse's notes for each point during a visit.
