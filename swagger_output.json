@@ -5,7 +5,7 @@
         "title": "REST API",
         "description": ""
     },
-    "host": "dbcbe.onrender.com",
+    "host": "https://ihhn-home-health-care-be.onrender.com",
     "basePath": "/",
     "schemes": [
         "https"
