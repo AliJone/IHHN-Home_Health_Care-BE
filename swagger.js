@@ -1,11 +1,13 @@
 const swaggerAutogen = require('swagger-autogen')();
 const fs = require('fs');
+const dotenv = require('dotenv');
+
 
 const outputFile = './swagger_output.json';
 const endpointsFiles = ['./index.js'];
-
+const ourHost = process.env.HOST || 'localhost:3000'
 const doc = {
-    host: 'https://ihhn-home-health-care-be.onrender.com',
+    host: ourHost,
     schemes: ['https'],
     securityDefinitions: {
         Bearer: {
