@@ -1,44 +1,32 @@
 const express = require('express');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger_output.json')
 const prisma = require('./dbClient/prismaClient');
+const authRoutes = require('./routes/authRoutes');
+const nurseRoutes = require('./routes/nurseRoutes');
+const patientRoutes = require('./routes/patientRoutes');
+const scheduleRoutes = require('./routes/scheduleRoutes');
+const administrationRoutes = require('./routes/administrationRoutes');
+const generateSwaggerDoc = require('./swagger');
+
+dotenv.config();
 
 const app = express();
-app.use(express.json());
+const port = process.env.PORT || 3000;
+app.use(express.json()); 
 
-app.post('/nurses', async (req, res) => {
-    const { name, cnic, picture, email, role } = req.body;
-    const newNurse = await prisma.nurse.create({
-        data: { name, cnic, picture, email, role },
-    });
-    res.json(newNurse);
-});
+app.use(cors());
 
-app.get('/test', async (req, res) => {
-    const allNurses = await prisma.nurse.findMany();
-    res.json(allNurses);
-});
+app.use('/auth', authRoutes);
+app.use('/nurses', nurseRoutes);
+app.use('/patients', patientRoutes);
+app.use('/schedules', scheduleRoutes);
+app.use('/administrations', administrationRoutes);
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
-async function main() {
-    const newNurse = await prisma.nurse.create({
-        data: {
-            name: 'John Doe',
-            cnic: '1234567890123',
-            picture: 'url_to_picture',
-            email: 'john.doe@example.com',
-            role: 'NURSE', // Use 'HEADNURSE' for a head nurse
-        },
-    });
-    console.log('Added new nurse:', newNurse);
-}
 
-// main()
-//     .catch((e) => {
-//         throw e;
-//     })
-//     .finally(async () => {
-//         await prisma.$disconnect();
-//     });
-
-const port = 3000;
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on port ${port}`);
 });
