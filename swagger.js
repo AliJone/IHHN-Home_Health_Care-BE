@@ -5,7 +5,7 @@ const outputFile = './swagger_output.json';
 const endpointsFiles = ['./index.js'];
 
 const doc = {
-    host: 'dbcbe.onrender.com',
+    host: 'https://ihhn-home-health-care-be.onrender.com',
     schemes: ['https'],
     securityDefinitions: {
         Bearer: {
