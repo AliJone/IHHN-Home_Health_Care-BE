@@ -27,6 +27,7 @@ model Nurse {
   cnic      String   @unique
   picture   String
   email     String   @unique
+  password  String
   role      Role
   // Relations
   patients  Patient[] @relation("AssignedPatients")
