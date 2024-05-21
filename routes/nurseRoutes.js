@@ -40,4 +40,32 @@ router.get('/:id/patients', [
   param('id').isInt().withMessage('Nurse ID must be an integer')
 ], nurseController.getNursePatients);
 
+router.post('/assign-patients', async (req, res) => {
+  const { numNurses, numPatients } = req.body;
+  const totalVertices = numNurses + numPatients + 2; // including source and sink
+  const source = 0;
+  const sink = numNurses + numPatients + 1;
+  const graph = new EdmondsKarp(totalVertices);
+
+  // Edges from source to nurses
+  for (let i = 1; i <= numNurses; i++) {
+      graph.addEdge(source, i, 1);
+  }
+
+  // Edges from nurses to patients
+  for (let i = 1; i <= numNurses; i++) {
+      for (let j = 1; j <= numPatients; j++) {
+          graph.addEdge(i, numNurses + j, 1);
+      }
+  }
+
+  // Edges from patients to sink
+  for (let j = 1; j <= numPatients; j++) {
+      graph.addEdge(numNurses + j, sink, 1);
+  }
+
+  const maxFlow = graph.getMaxFlow(source, sink);
+  res.json({ maxAssigned: maxFlow });
+});
+
 module.exports = router;
