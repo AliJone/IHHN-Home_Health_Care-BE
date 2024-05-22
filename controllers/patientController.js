@@ -19,7 +19,11 @@ const createPatient = async (req, res) => {
 
 const getAllPatients = async (req, res) => {
   try {
-    const patients = await prisma.patient.findMany();
+    const patients = await prisma.patient.findMany({
+      include: { schedules: true },
+    });
+    console.log(patients);
+
     res.json(patients);
   } catch (error) {
     res.status(500).json({ message: 'Error retrieving patients', error: error.message });
