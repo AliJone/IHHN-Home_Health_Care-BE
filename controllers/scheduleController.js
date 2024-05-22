@@ -9,6 +9,26 @@ const createSchedule = async (req, res) => {
 
   try {
     const { date, status, nurseId, patientId } = req.body;
+
+    // Check if nurseId exists
+    const nurseExists = await prisma.nurse.findUnique({
+      where: { id: nurseId },
+    });
+
+    if (!nurseExists) {
+      return res.status(400).json({ message: 'Nurse ID does not exist' });
+    }
+
+    // Check if patientId exists
+    const patientExists = await prisma.patient.findUnique({
+      where: { id: patientId },
+    });
+
+    if (!patientExists) {
+      return res.status(400).json({ message: 'Patient ID does not exist' });
+    }
+
+    // Create the schedule
     const schedule = await prisma.schedule.create({
       data: {
         date: new Date(date),
@@ -17,11 +37,21 @@ const createSchedule = async (req, res) => {
         patientId,
       },
     });
-    res.status(201).json(schedule);
+
+    // Fetch the patient with updated schedules
+    const updatedPatient = await prisma.patient.findUnique({
+      where: { id: patientId },
+      include: { schedules: true },
+    });
+
+    res.status(201).json(updatedPatient);
   } catch (error) {
+    console.error('Error creating schedule:', error);
     res.status(500).json({ message: 'Error creating schedule', error: error.message });
   }
 };
+
+
 
 const updateSchedule = async (req, res) => {
   const { id } = req.params;

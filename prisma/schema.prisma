@@ -22,17 +22,19 @@ enum Role {
 
 // Nurse model, including both Nurses and HeadNurses
 model Nurse {
-  id        Int      @id @default(autoincrement())
-  name      String
-  cnic      String   @unique
-  picture   String
-  email     String   @unique
-  password  String
-  role      Role
+  id              Int              @id @default(autoincrement())
+  name            String
+  cnic            String           @unique
+  picture         String
+  email           String           @unique
+  password        String
+  role            Role
   // Relations
-  patients  Patient[] @relation("AssignedPatients")
-  schedules Schedule[]
+  patients        Patient[]        @relation("AssignedPatients")
+  schedules       Schedule[]
+  administrations Administration[] // Add this relation field
 }
+
 
 // Patient model
 model Patient {
@@ -77,8 +79,10 @@ model Administration {
   id          Int      @id @default(autoincrement())
   date        DateTime
   patientId   Int      // This is the foreign key field referencing the Patient model
+  nurseId     Int?     // Adding nurseId field and setting it to not required
   // Relations
   patient     Patient  @relation(fields: [patientId], references: [id])
+  nurse       Nurse?   @relation(fields: [nurseId], references: [id])
   points      AdminPoint[]
 }
 

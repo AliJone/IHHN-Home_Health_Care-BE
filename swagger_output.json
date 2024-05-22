@@ -311,6 +311,36 @@
                 ]
             }
         },
+        "/nurses/assign-patients": {
+            "post": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "numNurses": {
+                                    "example": "any"
+                                },
+                                "numPatients": {
+                                    "example": "any"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "tags": [
+                    "Nurses"
+                ]
+            }
+        },
         "/patients/": {
             "post": {
                 "description": "",
@@ -741,6 +771,9 @@
                                 },
                                 "patientId": {
                                     "example": "any"
+                                },
+                                "nurseId": {
+                                    "example": "any"
                                 }
                             }
                         }
@@ -813,6 +846,9 @@
                                     "example": "any"
                                 },
                                 "nurseNotes": {
+                                    "example": "any"
+                                },
+                                "nurseId": {
                                     "example": "any"
                                 }
                             }

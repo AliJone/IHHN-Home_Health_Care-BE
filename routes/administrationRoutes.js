@@ -13,9 +13,11 @@ router.get('/patient/:patientId', [
 ], administrationController.getAdministrationsByPatient);
 
 router.put('/:id', [
+  // console.log(param('id')),
   param('id').isInt().withMessage('Valid administrationId is required'),
   body('date').optional().isISO8601().withMessage('Valid date is required'),
   // You may allow updating patientId or keep it immutable based on your application logic
+  body('nurseId').isInt().withMessage('Valid nurseId is required'),
 ], administrationController.updateAdministration);
 
 router.delete('/:id', [

@@ -10,13 +10,15 @@
   "author": "",
   "license": "ISC",
   "nodemonConfig": {
-    "ignore": ["swagger_output.json"]
+    "ignore": [
+      "swagger_output.json"
+    ]
   },
   "devDependencies": {
-    "prisma": "^5.11.0"
+    "prisma": "^5.14.0"
   },
   "dependencies": {
-    "@prisma/client": "^5.11.0",
+    "@prisma/client": "^5.14.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

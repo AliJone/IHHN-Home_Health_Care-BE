@@ -22,13 +22,14 @@ const createAdministration = async (req, res) => {
 };
 
 const updateAdministration = async (req, res) => {
+  console.log(req);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
   const { id } = req.params;
-  const { date, patientId } = req.body;
+  const { date, patientId, nurseId } = req.body;
 
   try {
     const administration = await prisma.administration.update({
@@ -36,6 +37,7 @@ const updateAdministration = async (req, res) => {
       data: {
         date,
         patientId,
+        nurseId,
       },
     });
     res.json(administration);
@@ -78,12 +80,12 @@ const getAdministrationsByPatient = async (req, res) => {
 };
 const addAdminPoint = async (req, res) => {
     const { administrationId } = req.params;
-    const { note, picture, nurseNotes } = req.body;
+    const { note, picture, nurseNotes, nurseId } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-  
+
     try {
       const adminPoint = await prisma.adminPoint.create({
         data: {
