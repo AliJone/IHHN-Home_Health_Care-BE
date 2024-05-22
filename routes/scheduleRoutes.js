@@ -33,4 +33,6 @@ router.get('/patient/:patientId', [
   param('patientId').isInt({ min: 1 }).withMessage('Invalid patient ID'),
 ], scheduleController.getSchedulesByPatient);
 
+router.get('/', scheduleController.getAllSchedules);
+
 module.exports = router;

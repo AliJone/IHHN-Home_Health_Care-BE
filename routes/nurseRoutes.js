@@ -41,29 +41,50 @@ router.get('/:id/patients', [
 ], nurseController.getNursePatients);
 
 router.post('/assign-patients', async (req, res) => {
-  const { numNurses, numPatients } = req.body;
-  const totalVertices = numNurses + numPatients + 2; // including source and sink
+  const { numNurses, numHeadNurses, numPatients } = req.body;
+  const totalVertices = numNurses + numHeadNurses + numPatients + 2; // including source and sink
   const source = 0;
-  const sink = numNurses + numPatients + 1;
+  const sink = numNurses + numHeadNurses + numPatients + 1;
   const graph = new EdmondsKarp(totalVertices);
+
+  // Edges from source to head nurses
+  for (let i = 1; i <= numHeadNurses; i++) {
+      graph.addEdge(source, i, 1);
+  }
 
   // Edges from source to nurses
   for (let i = 1; i <= numNurses; i++) {
-      graph.addEdge(source, i, 1);
+      graph.addEdge(source, numHeadNurses + i, 1);
+  }
+
+  // Each head nurse connects to exactly one nurse
+  for (let i = 1; i <= numHeadNurses; i++) {
+      const nurseIndex = numHeadNurses + i; // Assuming 1-to-1 mapping for simplicity
+      if (nurseIndex <= numNurses + numHeadNurses) {
+          graph.addEdge(i, nurseIndex, 1);
+      }
+  }
+
+  // Edges from head nurses to patients
+  for (let i = 1; i <= numHeadNurses; i++) {
+      for (let j = 1; j <= numPatients; j++) {
+          graph.addEdge(i, numHeadNurses + numNurses + j, 1);
+      }
   }
 
   // Edges from nurses to patients
   for (let i = 1; i <= numNurses; i++) {
       for (let j = 1; j <= numPatients; j++) {
-          graph.addEdge(i, numNurses + j, 1);
+          graph.addEdge(numHeadNurses + i, numHeadNurses + numNurses + j, 1);
       }
   }
 
   // Edges from patients to sink
   for (let j = 1; j <= numPatients; j++) {
-      graph.addEdge(numNurses + j, sink, 1);
+      graph.addEdge(numHeadNurses + numNurses + j, sink, 1);
   }
 
+  // Calculate the maximum flow from source to sink
   const maxFlow = graph.getMaxFlow(source, sink);
   res.json({ maxAssigned: maxFlow });
 });

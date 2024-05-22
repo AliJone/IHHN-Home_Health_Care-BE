@@ -51,7 +51,15 @@ const createSchedule = async (req, res) => {
   }
 };
 
-
+// New function to get all schedules
+const getAllSchedules = async (req, res) => {
+  try {
+    const schedules = await prisma.schedule.findMany();
+    res.json(schedules);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching all schedules', error: error.message });
+  }
+};
 
 const updateSchedule = async (req, res) => {
   const { id } = req.params;
@@ -141,4 +149,5 @@ module.exports = {
   getScheduleById,
   getSchedulesByNurse,
   getSchedulesByPatient,
+  getAllSchedules
 };

@@ -324,6 +324,9 @@
                                 "numNurses": {
                                     "example": "any"
                                 },
+                                "numHeadNurses": {
+                                    "example": "any"
+                                },
                                 "numPatients": {
                                     "example": "any"
                                 }
@@ -534,6 +537,20 @@
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "tags": [
+                    "Schedules"
+                ]
+            },
+            "get": {
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     },
                     "500": {
                         "description": "Internal Server Error"
