@@ -13,10 +13,8 @@ router.get('/patient/:patientId', [
 ], administrationController.getAdministrationsByPatient);
 
 router.put('/:id', [
-  // console.log(param('id')),
   param('id').isInt().withMessage('Valid administrationId is required'),
   body('date').optional().isISO8601().withMessage('Valid date is required'),
-  // You may allow updating patientId or keep it immutable based on your application logic
   body('nurseId').isInt().withMessage('Valid nurseId is required'),
 ], administrationController.updateAdministration);
 
@@ -29,6 +27,7 @@ router.post('/:administrationId/adminPoints', [
   body('note').notEmpty().withMessage('Note is required'),
   body('picture').optional().isURL().withMessage('Valid URL is required for the picture'),
   body('nurseNotes').notEmpty().withMessage('Nurse notes are required'),
+  body('value').optional().notEmpty().withMessage('Value cannot be empty if provided'), // Added validation for optional value field
 ], administrationController.addAdminPoint);
 
 router.put('/adminPoints/:adminPointId', [
@@ -36,6 +35,7 @@ router.put('/adminPoints/:adminPointId', [
   body('note').optional().notEmpty().withMessage('Note cannot be empty'),
   body('picture').optional().isURL().withMessage('Valid URL is required for the picture'),
   body('nurseNotes').optional().notEmpty().withMessage('Nurse notes cannot be empty'),
+  body('value').optional().notEmpty().withMessage('Value cannot be empty if provided'), // Added validation for optional value field
 ], administrationController.updateAdminPoint);
 
 router.delete('/adminPoints/:adminPointId', [

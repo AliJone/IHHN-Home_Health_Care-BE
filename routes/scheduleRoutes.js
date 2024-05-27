@@ -20,7 +20,7 @@ router.put('/:id', [
 router.delete('/:id', [
   param('id').isInt({ min: 1 }).withMessage('Invalid schedule ID'),
 ], scheduleController.deleteSchedule);
-
+  
 router.get('/:id', [
   param('id').isInt({ min: 1 }).withMessage('Invalid schedule ID'),
 ], scheduleController.getScheduleById);
